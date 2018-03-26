@@ -1,8 +1,14 @@
+package com.example.skynet.skynet;
+
 import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+
+/**
+ * Created by eddyl on 23/3/2018.
+ */
 
 public class MySingleton {
     private static MySingleton mInstance;

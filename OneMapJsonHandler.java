@@ -1,28 +1,9 @@
 package com.example.skynet.skynet;
 
-import android.arch.persistence.room.Database;
-import android.content.Context;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.android.volley.Cache;
-import com.android.volley.Network;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.net.InetAddress;
 
 /**
  * Created by eddyl on 24/3/2018.

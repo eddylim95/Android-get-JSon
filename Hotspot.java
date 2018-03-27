@@ -1,8 +1,6 @@
 package com.example.skynet.skynet;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 
 /**
  * Created by eddyl on 24/3/2018.

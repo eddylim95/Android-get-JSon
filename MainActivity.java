@@ -1,11 +1,6 @@
 package com.example.skynet.skynet;
 
-import android.arch.persistence.db.SupportSQLiteOpenHelper;
-import android.arch.persistence.room.DatabaseConfiguration;
-import android.arch.persistence.room.InvalidationTracker;
-import android.arch.persistence.room.Room;
-import android.content.Context;
-import android.os.AsyncTask;
+
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 
 import com.android.volley.Cache;
@@ -28,15 +22,9 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
 import java.net.InetAddress;
-import java.util.jar.Attributes;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,12 +78,12 @@ public class MainActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new AsycThread(mDB, json, view).execute().toString();
+                    new AsycThread(mDB, json).execute();
                 }
             });
         }
         catch (Exception e){
-            Log.e("MYAPP", "onCreate: ", e);
+            Log.e("Button", "onCreate error: ", e);
         }
 
 
@@ -107,26 +95,18 @@ public class MainActivity extends AppCompatActivity {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com");
             //You can replace it with your name
-            EditText editText = (EditText) findViewById(R.id.editText);
             if (!ipAddr.equals("") == true){
-                editText.setText("Internet Connected!");
+                Log.d("Internet","Internet connected");
             }
             else {
-                editText.setText("Internet not Connected!");
+                Log.d("Internet","Internet not connected");
             }
             return !ipAddr.equals("");
 
         } catch (Exception e) {
-            EditText editText = (EditText) findViewById(R.id.editText);
-            editText.setText("Internet Error");
-            Log.e("MYAPP", "exception", e);
+            Log.e("Internet Error", "exception", e);
             return false;
         }
-    }
-
-    private void updateProgress(){
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(progress);
     }
 
     private void retrieveJson() {
@@ -146,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("MYAPP", "exception", error);
+                    Log.e("json return error", "exception", error);
                 }
             });
             MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
         } catch (Exception e) {
-            Log.e("MYAPP", "exception", e);
+            Log.e("Request", "exception", e);
         }
     }
 

@@ -9,36 +9,22 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String url = "https://developers.onemap.sg/privateapi/";
-    private String urlType = "themesvc/retrieveTheme?queryName=wireless_hotspots&token=";
-    private String apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEzOTEsInVzZXJf" +
-            "aWQiOjEzOTEsImVtYWlsIjoiZWRkeWxpbTk1QGhvdG1haWwuY29tIiwiZm9yZXZlciI6ZmFsc2UsImlzc" +
-            "yI6Imh0dHA6XC9cL29tMi5kZmUub25lbWFwLnNnXC9hcGlcL3YyXC91c2VyXC9zZXNzaW9uIiwiaWF0I" +
-            "joxNTIyMDY3ODYyLCJleHAiOjE1MjI0OTk4NjIsIm5iZiI6MTUyMjA2Nzg2MiwianRpIjoiZmU0YTBkOGVjN" +
-            "WY2ZjEzMGJhOGFkZGNmOTQ2NDAzNzkifQ.zlkHGk-zlqzsSMsHKDLBxo1uS1lcd5XkEbuisv6g2As";
-
-    public AppDatabase mDB;
-    public Boolean internetConnection = false;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //To enable internet in Emulator
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        mDB = AppDatabase.getInstance(getApplicationContext());
-
-        internetConnection = InternetConnection.getInternetStatus().getInternet();
-        Log.d("MainActivity", "internetCon set" + internetConnection);
-        if (this.internetConnection == true){
+        if (InternetConnection.getInternetStatus().getInternet() == true){
             try {
+                Log.d("MainActivity", "Internet connected");
                 OneMapJsonHandler.getInstance().retrieveJson(getApplicationContext());
             }
             catch (Exception e){
-                Log.e("MainActivity", "retrieve Json failed", e);
+                Log.e("MainActivity", "Internet connection failed, skipping Json retrieval", e);
             }
         }
         else {
@@ -50,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 try {
-                    new AsycThread(mDB).execute();
+                    new AsycThread(AppDatabase.getInstance(getApplicationContext())).execute();
                 }
                 catch (Exception e) {
                     Log.e("MainActivity", "AsyncThread Error", e);

@@ -19,6 +19,7 @@ public class InternetConnection {
     }
 
     public boolean getInternet(){
+        isInternetAvailable();
         return internet;
     }
 

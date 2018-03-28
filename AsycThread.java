@@ -12,22 +12,20 @@ import org.json.JSONObject;
 public class AsycThread extends AsyncTask<Void, Void, Void> {
 
     private AppDatabase appDatabase;
-    private JSONObject jsonObject;
 
-    public AsycThread(AppDatabase appDatabase, JSONObject jsonObject){
+    public AsycThread(AppDatabase appDatabase){
         this.appDatabase = appDatabase;
-        this.jsonObject = jsonObject;
     }
 
     protected Void doInBackground(Void... voids) {
         try {
-            OneMapJsonHandler oneMapJsonHandler = new OneMapJsonHandler();
-            oneMapJsonHandler.storeInSQL(appDatabase, jsonObject);
+
+            OneMapJsonHandler.getInstance().storeInSQL(appDatabase);
             String test = appDatabase.hotspotDao().findByPostcode(470719).getNAME(); //Query test
-            Log.d("SQL", test);
+            Log.d("AsyncThread", test);
         }
         catch (Exception e){
-            Log.e("Background", "doInBackground: ", e);
+            Log.e("AsyncThread", "Async doInBackground Error", e);
         }
         return null;
     }

@@ -1,6 +1,12 @@
 package com.example.skynet.skynet;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,17 +17,34 @@ import org.json.JSONObject;
 
 public class OneMapJsonHandler implements JsonHandler {
 
+    private static OneMapJsonHandler mInstance;
     private int index;
     private int numHotspots;
 
+    private String urlSite = "https://developers.onemap.sg/privateapi/";
+    private String urlType = "themesvc/retrieveTheme?queryName=wireless_hotspots&token=";
+    private String apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEzOTEsInVzZXJf" +
+            "aWQiOjEzOTEsImVtYWlsIjoiZWRkeWxpbTk1QGhvdG1haWwuY29tIiwiZm9yZXZlciI6ZmFsc2UsImlzc" +
+            "yI6Imh0dHA6XC9cL29tMi5kZmUub25lbWFwLnNnXC9hcGlcL3YyXC91c2VyXC9zZXNzaW9uIiwiaWF0I" +
+            "joxNTIyMDY3ODYyLCJleHAiOjE1MjI0OTk4NjIsIm5iZiI6MTUyMjA2Nzg2MiwianRpIjoiZmU0YTBkOGVjN" +
+            "WY2ZjEzMGJhOGFkZGNmOTQ2NDAzNzkifQ.zlkHGk-zlqzsSMsHKDLBxo1uS1lcd5XkEbuisv6g2As";
+    JSONObject json;
 
-    public OneMapJsonHandler() {
+
+    private OneMapJsonHandler() {
+    }
+
+    public static OneMapJsonHandler getInstance() {
+        if (mInstance == null) {
+            mInstance = new OneMapJsonHandler();
+        }
+        return mInstance;
     }
 
     @Override
-    public void storeInSQL(AppDatabase db, JSONObject jsonObject) {
+    public void storeInSQL(AppDatabase db) {
         try {
-            JSONArray jsonArray = jsonObject.getJSONArray("SrchResults");
+            JSONArray jsonArray = json.getJSONArray("SrchResults");
             numHotspots = Integer.parseInt(jsonArray.getJSONObject(0).getString("FeatCount"));
             int[] addressPostalCode = new int[numHotspots];
             double[] longtitude = new double[numHotspots];
@@ -49,15 +72,49 @@ public class OneMapJsonHandler implements JsonHandler {
                     db.hotspotDao().insertAll(hotspot);
                 }
                 catch (Exception e){
-                    Log.e("SQL", "storeInSQL: ", e);
+                    Log.e("Json", "storeInSQL erorr ", e);
                 }
             }
+            Log.d("Json", "storeInSQL done!");
         } catch (Exception e) {
-            Log.e("DROP", "Json handler error", e);
+            Log.e("Json", "Json handler or drop error", e);
         }
     }
 
+    public void retrieveJson(Context context) {
+        try {
+            String url = this.getConcatUrl();
 
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+                    null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        json = response;
+                    } catch (Exception e) {
+                        Log.e("Json", "Failed assign Json", e);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Json", "Volley error", error);
+                }
+            });
+            Log.d("Json", "retrieveJson: done");
+            RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+        } catch (Exception e) {
+            Log.e("Json", "JsonObjectRequest failed", e);
+        }
+    }
+
+    public String getConcatUrl() {
+        return (urlSite + urlType + apiKey);
+    }
+
+    public JSONObject getJson() {
+        return json;
+    }
 }
 
 

@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase create(final Context context) {
         AppDatabase db = Room.databaseBuilder(context,
-                AppDatabase.class, "hotspot").allowMainThreadQueries().build();
+                AppDatabase.class, "hotspot.db").allowMainThreadQueries().build();
         return db;
     }
 

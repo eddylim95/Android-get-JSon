@@ -8,6 +8,6 @@ import org.json.JSONObject;
 
 public interface JsonHandler {
 
-    public void storeInSQL(AppDatabase db, JSONObject jsonObject);
+    public void storeInSQL(AppDatabase db);
 
 }
